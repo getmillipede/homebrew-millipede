@@ -3,8 +3,8 @@ require "language/go"
 class MillipedeGo < Formula
   desc "Print a beautiful millipede"
   homepage "https://github.com/getmillipede/millipede-go"
-  url "https://github.com/getmillipede/millipede-go/archive/v1.2.0.tar.gz"
-  sha256 "90c7bd537bbd71af262bab57b2465005933915b683e9739a21957832746f5f31"
+  url "https://github.com/getmillipede/millipede-go/archive/v1.3.0.tar.gz"
+  sha256 "49d1e6ee6843b82d6b72254d00813941590ad9d4850b27a60e2fc10cfdd9c4f4"
 
   head "https://github.com/getmillipede/millipede-go.git"
 
@@ -12,15 +12,12 @@ class MillipedeGo < Formula
 
   def install
     ENV["GOPATH"] = buildpath
+    ENV["GOBIN"] = buildpath
     ENV["CGO_ENABLED"] = "0"
-    ENV.prepend_create_path "PATH", buildpath/"bin"
 
-    mkdir_p buildpath/"src/github.com/getmillipede"
-    ln_s buildpath, buildpath/"src/github.com/getmillipede/millipede-go"
-    Language::Go.stage_deps resources, buildpath/"src"
+    (buildpath/"src/github.com/getmillipede/millipede-go").install Dir["*"]
 
-    system "go", "build", "-o", "millipede-go", "./cmd/millipede-go"
-    bin.install "millipede-go"
+    system "go", "build", "-o", "#{bin}/millipede-go", "-v", "github.com/getmillipede/millipede-go/cmd/millipede-go/"
 
     # FIXME: add autocompletion
   end
